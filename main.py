@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup as bs
 import re
 
 def get_list():
-    schools=['北京']
+    schools=['北京大学']
     return schools
 
 def download_html(url):
