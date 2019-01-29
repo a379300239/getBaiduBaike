@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup as bs
 import re
 
 def get_list():
-    schools=['北京大学']
+    #一本院校
+    #schools=['北京大学']
     return schools
 
 def download_html(url):
@@ -16,13 +17,16 @@ def download_html(url):
         return None
 
 def parse_html(html):
-    soup=bs(html,'lxml')
-    intr=soup.find_all('div', attrs={'class': 'lemma-summary'})[0]
-    s = intr.get_text()
-    #替换形如[1]的文字......
-    pattern=re.compile(r'\[.*?\]')
-    s=re.sub(pattern,'',s)
-    return s
+    try:
+        soup=bs(html,'lxml')
+        intr=soup.find_all('div', attrs={'class': 'lemma-summary'})[0]
+        s = intr.get_text()
+        #替换形如[1]的文字......
+        pattern=re.compile(r'\[.*?\]')
+        s=re.sub(pattern,'',s)
+        return s
+    except:
+        return None
 
 def save(txt):
     with open('school_list.txt','a+',encoding='utf-8') as wfile:
@@ -34,6 +38,9 @@ if __name__=='__main__':
         url='https://baike.baidu.com/item/{school}'.format(school=re_school)
         html=download_html(url)
         content=parse_html(html)
+        if content == None:
+            print("爬取"+re_school+'时出错')
+            continue
         s=re_school+content
         save(s)
         print('已获得'+re_school+'的简介')
